@@ -21,8 +21,7 @@ matches int default 0
 
 create table matches(
 match_id serial PRIMARY KEY,
-player_1 int,
-player_2 int,
-winner int
+winner int,
+loser int
 );
 

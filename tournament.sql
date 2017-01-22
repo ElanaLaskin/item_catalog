@@ -9,16 +9,18 @@ create database tournament;
 
 \c tournament
 
-DROP TABLE IF EXISTS players, matches;
+DROP TABLE IF EXISTS players;
+DROP TABLE IF EXISTS matches;
 
 create table players(
-player_id serial primary key,
+player_id serial PRIMARY KEY,
 name text,
-score int
+wins int default 0,
+matches int default 0
 );
 
 create table matches(
-match_id decimal primary key,
+match_id serial PRIMARY KEY,
 player_1 int,
 player_2 int,
 winner int

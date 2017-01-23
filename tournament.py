@@ -17,9 +17,7 @@ def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
     cursor = conn.cursor()
-    cursor.execute("truncate table matches;")
-    cursor.execute("update players set matches=%s", [0])
-    cursor.execute("update players set wins=%s", [0])
+    cursor.execute("truncate table matches cascade;")
     conn.commit()
     conn.close()
 
@@ -28,7 +26,7 @@ def deletePlayers():
     """Remove all the player records from the database."""
     conn = connect()
     cursor = conn.cursor()
-    cursor.execute("truncate table players;")
+    cursor.execute("truncate table players cascade;")
     conn.commit()
     conn.close()
 
@@ -72,7 +70,8 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    query = '''select * from players order by wins;'''
+
+    query = '''select * from scores;'''
 
     conn = connect()
     cursor = conn.cursor()
@@ -92,11 +91,6 @@ def reportMatch(winner, loser):
     conn = connect() 
     cursor = conn.cursor()
     cursor.execute(insert, values)
-
-    insert2 = '''update players set wins=(wins + 1) where player_id = %s'''
-    cursor.execute(insert2, [winner])
-    insert3 = '''update players set matches=(matches + 1) where player_id = %s or player_id = %s'''
-    cursor.execute(insert3, [winner, loser])
 
     return conn.commit()
  
@@ -119,7 +113,7 @@ def swissPairings():
 
     query = '''
     select a.player_id, a.name, b.player_id, b.name 
-    from players a, players b
+    from scores a, scores b
     where a.player_id > b.player_id
     and a.wins = b.wins
     order by a.player_id'''

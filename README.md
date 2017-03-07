@@ -4,7 +4,7 @@
 
 SETUP:
 
-1) cd to the directory where you want to clone my repository and type `git clone https://github.com/ElanaLaskin/fullstack-nanodegree-vm.git`
+1) cd to the directory where you want to clone my repository and type `git clone https://github.com/ElanaLaskin/tournament-results.git`
 
 2) `cd /vagrant`
 

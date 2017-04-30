@@ -6,41 +6,21 @@
 import psycopg2
 
 
-def connect(database_name="tournament"):
-    """Connect to the PostgreSQL database.  Returns a database connection and cursor."""
-    # https://review.udacity.com/#!/reviews/334258
-    try:
-        conn = psycopg2.connect("dbname=tournament")
-        cursor = conn.cursor()
-        return conn, cursor
-    except:
-        print("<error message>")
+def connect():
+    """Connect to the PostgreSQL database.  Returns a database connection."""
+    return psycopg2.connect("dbname=tournament")
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    conn, cursor = connect()
-    cursor.execute("truncate table matches cascade;")
-    conn.commit()
-    conn.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    conn, cursor = connect()
-    cursor.execute("truncate table players cascade;")
-    conn.commit()
-    conn.close()
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    conn, cursor = connect()
-    # https://discussions.udacity.com/t/countplayers-returning-non-zero/26638/5
-    query = """Select Count(*) From players;"""
-    cursor.execute(query)
-    player_count = cursor.fetchall()
-    return int(player_count[0][0])
 
 
 def registerPlayer(name):
@@ -52,9 +32,6 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    conn, cursor = connect()
-    cursor.execute("Insert into players(name) values(%s)", (name,))
-    return conn.commit()
 
 
 def playerStandings():
@@ -71,12 +48,6 @@ def playerStandings():
         matches: the number of matches the player has played
     """
 
-    query = '''select * from scores;'''
-
-    conn, cursor = connect()
-    cursor.execute(query)
-    return list(cursor.fetchall())
-
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
@@ -85,12 +56,6 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
-    insert = '''insert into matches (winner, loser) values(%s, %s)'''
-    values = [winner, loser]
-    conn, cursor = connect()
-    cursor.execute(insert, values)
-
-    return conn.commit()
  
  
 def swissPairings():
@@ -108,25 +73,5 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-
-    query = '''
-    select a.player_id, a.name, b.player_id, b.name 
-    from scores a, scores b
-    where a.player_id > b.player_id
-    and a.wins = b.wins
-    order by a.player_id'''
-    
-    conn, cursor = connect()
-    cursor.execute(query)
-    match_list = list(cursor.fetchall())
-
-    def merge(x):
-        s = set()
-        for i in x:
-            if not s.intersection(i):
-                yield i
-                s.update(i)
-
-    return list(merge(match_list))
 
 

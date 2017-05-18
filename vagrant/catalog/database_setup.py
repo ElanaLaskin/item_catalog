@@ -16,3 +16,4 @@ class Catagories(Base):
 	id = Column(Integer, primary_key=True)
 
 engine = create_engine('sqlite:///catalog.db')
+Base.metadata.bind = engine

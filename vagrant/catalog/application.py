@@ -1,10 +1,14 @@
 from flask import Flask, render_template
+from database_setup import Base, Catagories, engine, DBSession
 
 app = Flask(__name__)
 
+session = DBSession()
+
 @app.route('/')
 def home():
-	return render_template('home.html')
+	restaurants = session.query(Restaurant).all()
+	return render_template('home.html', restaurants=restaurants)
 
 @app.route('/<category>')
 def show_category(category):
@@ -24,4 +28,4 @@ def delete_item(category, item):
 
 if __name__ == '__main__':
 	app.debug = True
-	app.run(host = '0.0.0.0', port = 5000)
+	app.run(host = '0.0.0.0', port = 5001)
